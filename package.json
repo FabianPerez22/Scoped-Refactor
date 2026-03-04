@@ -1,0 +1,74 @@
+{
+  "name": "add-before",
+  "displayName": "Scoped Refactor",
+  "description": "Run targeted workspace refactors with add-before, remove-all, and edit-all actions, plus path scoping and comment-safe matching.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.109.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:add-before.run"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "add-before.run",
+        "title": "Scoped Refactor: Open"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "addBefore",
+          "title": "Scoped Refactor",
+          "icon": "media/add-before-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "addBefore": [
+        {
+          "id": "addBefore.view",
+          "name": "Scoped Refactor"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "addBefore.view",
+        "contents": "Run scoped workspace refactors with add, edit, or remove actions.\n[Open Scoped Refactor](command:add-before.run)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "add-before.run",
+          "when": "view == addBefore.view",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.109.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "typescript-eslint": "^8.56.1",
+    "eslint": "^9.39.3",
+    "typescript": "^5.9.3",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}
