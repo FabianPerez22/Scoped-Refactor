@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		panel = vscode.window.createWebviewPanel('addBeforeModal', 'Add Before', vscode.ViewColumn.Active, {
+		panel = vscode.window.createWebviewPanel('addBeforeModal', 'Scoped Refactor', vscode.ViewColumn.Active, {
 			enableScripts: true,
 			retainContextWhenHidden: true
 		});
@@ -59,19 +59,22 @@ export function activate(context: vscode.ExtensionContext) {
 				});
 
 				if (message.command === 'preview') {
+					const expectedOutput = buildExpectedOutput(operation, actionText, targetTexts);
 					postResult(
 						panel,
-						`Potential changes (${operationLabel(operation)}): ${result.replacements} matches across ${result.filesChanged} files.`
+						`Potential changes (${operationLabel(operation)}): ${result.replacements} matches across ${result.filesChanged} files.\nExpected output: ${expectedOutput}`
 					);
 					return;
 				}
 
 				if (result.replacements === 0) {
-					postResult(panel, `No matches found for ${operationLabel(operation)} (or they were already updated).`);
+					const expectedOutput = buildExpectedOutput(operation, actionText, targetTexts);
+					postResult(panel, `No matches found for ${operationLabel(operation)} (or they were already updated).\nExpected output: ${expectedOutput}`);
 					return;
 				}
 
-				postResult(panel, `Applied ${operationLabel(operation)}: ${result.replacements} changes across ${result.filesChanged} files.`);
+				const expectedOutput = buildExpectedOutput(operation, actionText, targetTexts);
+				postResult(panel, `Applied ${operationLabel(operation)}: ${result.replacements} changes across ${result.filesChanged} files.\nExpected output: ${expectedOutput}`);
 			} catch (error) {
 				const messageText = error instanceof Error ? error.message : String(error);
 				postResult(panel, `Error: ${messageText}`);
@@ -255,7 +258,7 @@ function getModalHtml(): string {
 			const input = document.createElement('input');
 			input.type = 'text';
 			input.setAttribute('data-role', 'pathRule');
-			input.placeholder = 'Example: src/generated/* or Player.java';
+			input.placeholder = 'Example: src/package/* or src/.../name.java/py/...';
 			input.value = value && value.path ? value.path : '';
 			input.addEventListener('input', persistState);
 			row.appendChild(input);
@@ -306,7 +309,7 @@ function getModalHtml(): string {
 			const operation = operationSelect.value;
 			if (operation === 'addBefore') {
 				actionLabel.textContent = 'Add before to...';
-				actionInput.placeholder = 'Example: instancia.';
+				actionInput.placeholder = 'Example: instance.';
 				actionInput.disabled = false;
 				return;
 			}
@@ -559,6 +562,18 @@ function operationLabel(operation: OperationType): string {
 	return 'Edit all...';
 }
 
+function buildExpectedOutput(operation: OperationType, actionText: string, targetTexts: string[]): string {
+	if (operation === 'addBefore') {
+		return targetTexts.map((target) => actionText + target).join(', ');
+	}
+
+	if (operation === 'removeAll') {
+		return targetTexts.join(', ') + ' will be removed.';
+	}
+
+	return targetTexts.map((target) => target + ' -> ' + actionText).join(', ');
+}
+
 function toStringArray(value: unknown): string[] {
 	if (!Array.isArray(value)) {
 		return [];
@@ -794,3 +809,7 @@ function isCommentRange(mask: Uint8Array, start: number, length: number): boolea
 	}
 	return false;
 }
+
+
+
+

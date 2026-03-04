@@ -2,7 +2,7 @@
   "name": "add-before",
   "displayName": "Scoped Refactor",
   "description": "Run targeted workspace refactors with add-before, remove-all, and edit-all actions, plus path scoping and comment-safe matching.",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "publisher": "FabianPerez232333",
   "engines": {
     "vscode": "^1.109.0"
