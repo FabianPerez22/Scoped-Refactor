@@ -57,3 +57,6 @@ It is language-agnostic (text-based), so it can be used broadly in mixed codebas
 - Java: Add `instance.` before target `life` across classes.
 - TypeScript/React: Edit all `oldApi` to `newApi` in selected folders.
 - Python: Remove all uses of a deprecated token outside comments.
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
